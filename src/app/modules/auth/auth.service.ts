@@ -1,5 +1,8 @@
+import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
+import AppError from "../../errorsHelpers/AppError";
 import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
 
 interface IRegisterCustomerPayload {
     name: string;
@@ -19,11 +22,27 @@ const registerCustomer = async (payload: IRegisterCustomerPayload) => {
     })
 
     if (!data.user) {
-        throw new Error("Failed to register customer");
+        throw new AppError(status.BAD_REQUEST, "Failed to register customer");
     }
 
 
-    return data
+    const customer = await prisma.$transaction(async (tx) => {
+
+            const customerTx = await tx.customer.create({
+                data: {
+                    userId: data.user.id,
+                    name: payload.name,
+                    email: payload.email,
+                }
+            })
+
+            return customerTx;  
+        })
+
+    return {
+            ...data,
+            customer,
+        }
 
 
 }
@@ -44,11 +63,11 @@ const loginUser = async (payload: ILoginUserPayload) => {
     })
 
     if (data.user.status === UserStatus.BLOCKED) {
-        throw new Error("User is blocked");
+        throw new AppError(status.FORBIDDEN, "User is blocked");
     }
 
     if (data.user.isDeleted || data.user.status === UserStatus.DELETED) {
-        throw new Error("User is deleted");
+        throw new AppError(status.NOT_FOUND, "User is deleted");
     }
 
     return data;

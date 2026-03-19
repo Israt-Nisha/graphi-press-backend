@@ -13,6 +13,8 @@ model User {
     updatedAt          DateTime   @updatedAt
     sessions           Session[]
     accounts           Account[]
+    customer           Customer?
+    designer           Designer?
 
     @@unique([email])
     @@map("user")

@@ -2,11 +2,22 @@ enum Role {
     ADMIN
     DESIGNER
     CUSTOMER
-    
 }
 
 enum UserStatus {
     BLOCKED
     DELETED
     ACTIVE
+}
+
+enum AddressType {
+    BILLING
+    SHIPPING
+}
+
+enum PaymentType {
+    CARD
+    MOBILE_BANKING
+    BANK_TRANSFER
+    WALLET
 }
