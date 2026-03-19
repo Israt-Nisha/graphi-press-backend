@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.5.0",
   "engineVersion": "280c870be64f457428992c43c1f6d557fab6e29e",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Category {\n  id        String    @id @default(uuid())\n  name      String    @db.VarChar(255)\n  slug      String    @unique @db.VarChar(255)\n  icon      String?   @db.VarChar(255)\n  isActive  Boolean   @default(true)\n  isDeleted Boolean   @default(false)\n  deletedAt DateTime?\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n\n  @@index([isDeleted], name: \"idx_category_isDeleted\")\n  @@index([slug], name: \"idx_category_slug\")\n  @@map(\"categories\")\n}\n",
+  "inlineSchema": "model Category {\n  id        String    @id @default(uuid())\n  name      String    @db.VarChar(255)\n  slug      String    @unique @db.VarChar(255)\n  icon      String?   @db.VarChar(255)\n  isActive  Boolean   @default(true)\n  isDeleted Boolean   @default(false)\n  deletedAt DateTime?\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n\n  @@index([isDeleted], name: \"idx_category_isDeleted\")\n  @@index([slug], name: \"idx_category_slug\")\n  @@map(\"categories\")\n}\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},

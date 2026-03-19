@@ -7,18 +7,4 @@ datasource db {
   provider = "postgresql"
 }
 
-model Category {
-  id        String    @id @default(uuid())
-  name      String    @db.VarChar(255)
-  slug      String    @db.VarChar(255) @unique
-  icon      String?   @db.VarChar(255)
-  isActive  Boolean   @default(true)
-  isDeleted Boolean   @default(false)
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
 
-  @@index([isDeleted], name: "idx_category_isDeleted")
-  @@index([slug], name: "idx_category_slug")
-  @@map("categories")
-}
