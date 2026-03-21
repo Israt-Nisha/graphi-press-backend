@@ -3,12 +3,10 @@ import { UserStatus } from "../../../generated/prisma/enums";
 import AppError from "../../errorsHelpers/AppError";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import { tokenUtils } from "../../utils/token";
+import { ILoginUserPayload, IRegisterCustomerPayload } from "./auth.interface";
 
-interface IRegisterCustomerPayload {
-    name: string;
-    email: string;
-    password: string;
-}
+
 
 const registerCustomer = async (payload: IRegisterCustomerPayload) => {
     const { name, email, password } = payload;
@@ -26,7 +24,8 @@ const registerCustomer = async (payload: IRegisterCustomerPayload) => {
     }
 
 
-    const customer = await prisma.$transaction(async (tx) => {
+    try {
+        const customer = await prisma.$transaction(async (tx) => {
 
             const customerTx = await tx.customer.create({
                 data: {
@@ -36,21 +35,49 @@ const registerCustomer = async (payload: IRegisterCustomerPayload) => {
                 }
             })
 
-            return customerTx;  
+            return customerTx
         })
 
-    return {
+        const accessToken = tokenUtils.getAccessToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleted: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+
+        const refreshToken = tokenUtils.getRefreshToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleted: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+
+        return {
             ...data,
-            customer,
+            accessToken,
+            refreshToken,
+            customer
         }
 
+    } catch (error) {
+        console.log("Transaction error : ", error);
+        await prisma.user.delete({
+            where: {
+                id: data.user.id
+            }
+        })
+        throw error;
+    }
+
 
 }
 
-interface ILoginUserPayload {
-    email: string;
-    password: string;
-}
 
 const loginUser = async (payload: ILoginUserPayload) => {
     const { email, password } = payload;
@@ -70,7 +97,31 @@ const loginUser = async (payload: ILoginUserPayload) => {
         throw new AppError(status.NOT_FOUND, "User is deleted");
     }
 
-    return data;
+    const accessToken = tokenUtils.getAccessToken({
+        userId: data.user.id,
+        role: data.user.role,
+        name: data.user.name,
+        email: data.user.email,
+        status: data.user.status,
+        isDeleted: data.user.isDeleted,
+        emailVerified: data.user.emailVerified,
+    });
+
+    const refreshToken = tokenUtils.getRefreshToken({
+        userId: data.user.id,
+        role: data.user.role,
+        name: data.user.name,
+        email: data.user.email,
+        status: data.user.status,
+        isDeleted: data.user.isDeleted,
+        emailVerified: data.user.emailVerified,
+    });
+
+    return {
+        ...data,
+        accessToken,
+        refreshToken,
+    };
 
 }
 
