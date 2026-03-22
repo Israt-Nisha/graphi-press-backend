@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 import { tokenUtils } from "../../utils/token";
+import status from "http-status";
 
 const registerCustomer = catchAsync(
     async (req: Request, res: Response) => {
@@ -16,7 +17,7 @@ const registerCustomer = catchAsync(
         tokenUtils.setBetterAuthSessionCookie(res, token as string);
 
         sendResponse(res, {
-            httpStatusCode: 201,
+            httpStatusCode: status.CREATED,
             success: true,
             message: "Customer registered successfully",
             data: {
@@ -42,7 +43,7 @@ const loginUser = catchAsync(
         tokenUtils.setBetterAuthSessionCookie(res, token);
 
         sendResponse(res, {
-            httpStatusCode: 200,
+            httpStatusCode: status.OK,
             success: true,
             message: "User logged in successfully",
             data: {
@@ -56,7 +57,21 @@ const loginUser = catchAsync(
     }
 )
 
+const getMe = catchAsync(
+    async (req: Request, res: Response) => {
+        const user = req.user;
+        const result = await AuthService.getMe(user);
+        sendResponse(res, {
+            httpStatusCode: status.OK,
+            success: true,
+            message: "User profile fetched successfully",
+            data: result,
+        })
+    }
+)
+
 export const AuthController = {
     registerCustomer,
     loginUser,
+    getMe,
 };
