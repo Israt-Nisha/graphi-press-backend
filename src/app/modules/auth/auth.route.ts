@@ -10,4 +10,6 @@ router.post("/login", AuthController.loginUser)
 
 router.get("/me", checkAuth(Role.ADMIN, Role.DESIGNER, Role.CUSTOMER), AuthController.getMe)
 
+router.post("/refresh-token", AuthController.getNewToken)
+
 export const AuthRoutes = router;
