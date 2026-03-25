@@ -15,9 +15,66 @@ enum AddressType {
     SHIPPING
 }
 
-enum PaymentType {
-    CARD
-    MOBILE_BANKING
-    BANK_TRANSFER
-    WALLET
+// enum PaymentType {
+//     CARD
+//     MOBILE_BANKING
+//     BANK_TRANSFER
+//     WALLET
+// }
+
+enum PricingType {
+    FIXED
+    AREA_BASED
+    VARIABLE
 }
+
+enum AttributeInputType {
+    SELECT
+    RADIO
+    TEXT
+    NUMBER
+    FILE
+}
+
+enum PaymentStatus {
+    PAID
+    UNPAID
+}
+
+enum OverallOrderStatus {
+    PENDING
+    DESIGNING
+    APPROVAL_PENDING
+    PRINTING
+    QUALITY_CHECK
+    READY_FOR_DELIVERY
+    DELIVERED
+    CANCELLED
+}
+
+enum ServiceType {
+    PRINT_ONLY
+    DESIGN_ONLY
+    DESIGN_AND_PRINT
+}
+
+// PaymentType:
+// - FULL
+// - PARTIAL
+// - COD
+
+// PaymentStatus:
+// - PENDING
+// - SUCCESS
+// - FAILED
+// - REFUNDED
+
+// OrderItemStatus:
+// - PENDING
+// - DESIGNING
+// - APPROVAL_PENDING
+// - PRINTING
+// - QUALITY_CHECK
+// - READY_FOR_DELIVERY
+// - DELIVERED
+// - CANCELLED

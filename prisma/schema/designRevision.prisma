@@ -1,0 +1,26 @@
+model DesignRevision {
+    id String @id @default(uuid())
+    orderItemId String
+    revisionNumber Int
+
+    previewUrl String?
+    printFileUrl String?
+
+    feedback String? @db.Text
+    approvalStatus DesignApprovalStatus @default(PENDING)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+    @@index([orderItemId], name: "idx_design_revision_order_item_id")
+    @@map("design_revisions")
+}
+
+enum DesignApprovalStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}

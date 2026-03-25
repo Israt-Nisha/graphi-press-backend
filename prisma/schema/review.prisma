@@ -1,0 +1,21 @@
+model Review {
+    id        String   @id @default(uuid(7))
+    rating    Float    @default(0.0)
+    comment   String?  @db.Text
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+   orderId String @unique
+    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+   customerId String
+    customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+    designerId String
+    designer   Designer @relation(fields: [designerId], references: [id], onDelete: Cascade)
+
+    @@index([orderId])
+    @@index([customerId])
+    @@index([designerId])
+    @@map("reviews")
+}
