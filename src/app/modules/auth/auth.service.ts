@@ -380,6 +380,44 @@ const resetPassword = async (email : string, otp : string, newPassword : string)
     })
 }
 
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const googleLoginSuccess = async (session : Record<string, any>) =>{
+    const isCustomerExists = await prisma.customer.findUnique({
+        where : {
+            userId : session.user.id,
+        }
+    })
+
+    if(!isCustomerExists){
+        await prisma.customer.create({
+            data : {
+                userId : session.user.id,
+                name : session.user.name,
+                email : session.user.email,
+            }
+        
+        })
+    }
+
+    const accessToken = tokenUtils.getAccessToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    const refreshToken = tokenUtils.getRefreshToken({
+        userId: session.user.id,
+        role: session.user.role,
+        name: session.user.name,
+    });
+
+    return {
+        accessToken,
+        refreshToken,
+    }
+}
+
 export const AuthService = {
     registerCustomer,
     loginUser,
@@ -390,4 +428,5 @@ export const AuthService = {
     verifyEmail,    
     forgetPassword,
     resetPassword,
+    googleLoginSuccess,
 };
