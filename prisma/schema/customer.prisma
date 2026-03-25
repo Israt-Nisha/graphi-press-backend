@@ -1,75 +1,74 @@
 model Customer {
-    id String @id @default(uuid())
+  id String @id @default(uuid())
 
-    name          String
-    email         String    @unique
-    profilePhoto  String?
-    contactNumber String?
-    address       String?
-    isDeleted     Boolean   @default(false)
-    deletedAt     DateTime?
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
+  name          String
+  email         String    @unique
+  profilePhoto  String?
+  contactNumber String?
+  address       String?
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-    //relations
+  //relations
 
-    userId            String             @unique
-    user              User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@index([email], name: "idx_customer_email")
-    @@index([isDeleted], name: "idx_customer_is_deleted")
-    @@map("customer")
+  orders Order[]
+  reviews Review[]
 
-
+  @@index([email], name: "idx_customer_email")
+  @@index([isDeleted], name: "idx_customer_is_deleted")
+  @@map("customer")
 }
-
 
 // model Customer {
 ////   id                String    @id @default(uuid())
 //   userId            String    @unique
 //   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
 //   // Business Information
 //   companyName       String?   @db.VarChar(255)
 //   businessType      String?   @db.VarChar(100)
 //   taxId             String?   @db.VarChar(100)
-  
+
 //   // Contact Information
 //   phone             String?   @db.VarChar(20)
 //   alternatePhone    String?   @db.VarChar(20)
-  
-  // Address Information
 
-  
+// Address Information
+
 //   addresses         Address[] @relation("CustomerAddresses")
-  
+
 //   // Payment & Preferences
 //   paymentMethods    PaymentMethod[]
 //   preferredPaymentMethodId String?
 //   preferredPaymentMethod PaymentMethod? @relation("PreferredPayment", fields: [preferredPaymentMethodId], references: [id], onDelete: SetNull)
-  
-  // Order & Tracking
+
+// Order & Tracking
 //   orders            Order[]
 //   orderTrackingPreferences OrderTrackingPreference?
-  
-  // Customer Profile
+
+// Customer Profile
 //   creditLimit       Decimal?  @default(0) @db.Numeric(12, 2)
 //   totalSpent        Decimal   @default(0) @db.Numeric(15, 2)
 //   totalOrders       Int       @default(0)
 //   averageOrderValue Decimal   @default(0) @db.Numeric(12, 2)
 //   loyaltyPoints     Int       @default(0)
-  
+
 //   // Communication Preferences
 //   emailNotifications Boolean @default(true)
 //   smsNotifications   Boolean @default(false)
-  
-  // Status & Audit
+
+// Status & Audit
 //   isActive          Boolean   @default(true)
 //   isVerified        Boolean   @default(false)
 //   isBlocked         Boolean   @default(false)
-  
+
 //   notes             String?   @db.Text
-  
+
 //   isDeleted         Boolean   @default(false)
 //   deletedAt         DateTime?
 //   createdAt         DateTime  @default(now())
@@ -86,19 +85,19 @@ model Customer {
 //   id                String    @id @default(uuid())
 //   customerId        String
 //   customer          Customer  @relation("CustomerAddresses", fields: [customerId], references: [id], onDelete: Cascade)
-  
+
 //   type              AddressType
-  
+
 //   fullName          String    @db.VarChar(255)
 //   phone             String    @db.VarChar(20)
-  
+
 //   streetAddress     String    @db.VarChar(255)
 //   apartmentSuite    String?   @db.VarChar(100)
 //   city              String    @db.VarChar(100)
 //   state             String    @db.VarChar(100)
 //   postalCode        String    @db.VarChar(20)
 //   country           String    @db.VarChar(100)
-  
+
 //   isDefault         Boolean   @default(false)
 //   isDeleted         Boolean   @default(false)
 //   deletedAt         DateTime?
@@ -114,35 +113,35 @@ model Customer {
 //   id                String    @id @default(uuid())
 //   customerId        String
 //   customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  
+
 //   // Relation for preferred payment
 //   preferredByCustomer Customer? @relation("PreferredPayment")
-  
+
 //   type              PaymentType
 //   provider          String    @db.VarChar(50) // "stripe", "sslcommerz", "bkash"
-  
+
 //   // Card Details (encrypted)
 //   cardLastFour      String?   @db.VarChar(4)
 //   cardBrand         String?   @db.VarChar(50)
 //   cardHolderName    String?   @db.VarChar(255)
 //   cardExpiry        String?   @db.VarChar(5)
-  
+
 //   // Mobile Banking
 //   phoneNumber       String?   @db.VarChar(20)
 //   bankCode          String?   @db.VarChar(10)
-  
+
 //   // Token Storage (encrypted)
 //   token             String?   @db.Text // Payment gateway token
-  
+
 //   isDefault         Boolean   @default(false)
 //   isActive          Boolean   @default(true)
-  
+
 //   transactionCount  Int       @default(0)
 //   totalTransactionAmount Decimal @default(0) @db.Numeric(15, 2)
-  
+
 //   lastUsedAt        DateTime?
 //   failedAttempts    Int       @default(0)
-  
+
 //   isDeleted         Boolean   @default(false)
 //   deletedAt         DateTime?
 //   createdAt         DateTime  @default(now())
@@ -159,12 +158,12 @@ model Customer {
 //   id                String    @id @default(uuid())
 //   customerId        String    @unique
 //   customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  
+
 //   // Notification Preferences
 //   notifyByEmail     Boolean   @default(true)
 //   notifyBySms       Boolean   @default(false)
 //   notifyByWhatsapp  Boolean   @default(false)
-  
+
 //   // Notification Triggers
 //   notifyOnOrderConfirmed Boolean @default(true)
 //   notifyOnDesignStart   Boolean @default(true)
@@ -173,15 +172,15 @@ model Customer {
 //   notifyOnQualityCheck  Boolean @default(true)
 //   notifyOnReadyForDelivery Boolean @default(true)
 //   notifyOnDelivered     Boolean @default(true)
-  
+
 //   // Delivery Preferences
 //   preferredDeliveryWindow String? @db.VarChar(50) // "MORNING", "AFTERNOON", "EVENING"
 //   preferredDeliveryDays   String? @db.Text // JSON array of days
-  
+
 //   // Communication Consent
 //   marketingEmails   Boolean   @default(true)
 //   productUpdates    Boolean   @default(true)
-  
+
 //   createdAt         DateTime  @default(now())
 //   updatedAt         DateTime  @updatedAt
 

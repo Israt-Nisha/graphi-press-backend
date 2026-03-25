@@ -1,0 +1,60 @@
+model Product {
+    id          String  @id @default(uuid())
+    name        String
+    slug        String  @unique
+    description String?
+    categoryId  String
+
+    basePrice   Float
+    pricingType PricingType
+
+    hasAttributes Boolean @default(false)
+
+    thumbnailUrl String?
+
+    isActive   Boolean @default(true)
+    isFeatured Boolean @default(false)
+
+    isDeleted Boolean   @default(false)
+    deletedAt DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    productAttributes ProductAttribute[]
+
+    orderItems OrderItem[]
+
+    // Relations
+    category Category @relation(fields: [categoryId], references: [id])
+}
+
+model ProductAttribute {
+    id        String             @id @default(uuid())
+    productId String
+    name      String
+    inputType AttributeInputType
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    values ProductAttributeValue[]
+
+
+    // Relations
+    product Product @relation(fields: [productId], references: [id])
+
+    
+}
+
+model ProductAttributeValue {
+    id          String  @id @default(uuid())
+    attributeId String
+    value       String
+    extraPrice  Decimal @default(0)
+
+    attribute ProductAttribute @relation(fields: [attributeId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+

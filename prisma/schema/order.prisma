@@ -1,0 +1,119 @@
+
+
+model Order {
+    id String @id @default(uuid())
+
+    totalAmount   Decimal
+    paymentStatus PaymentStatus @default(UNPAID)
+    overallStatus OverallOrderStatus @default(PENDING)
+
+    customerId String
+    customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+    designerId String
+    designer   Designer @relation(fields: [designerId], references: [id], onDelete: Cascade)
+
+    orderItems OrderItem[]
+    review Review?
+    payment Payment?
+
+    isdeleted Boolean   @default(false)
+    deletedAt DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@index([customerId], name: "idx_order_customer_id")
+    @@index([designerId], name: "idx_order_designer_id")    
+    @@map("orders")
+}
+
+model OrderItem {
+    id        String @id @default(uuid())
+    orderId   String
+    productId String
+
+    serviceType ServiceType
+
+    width    Float
+    height   Float
+    quantity Int
+
+    basePrice  Decimal
+    extraPrice Decimal
+    totalPrice Decimal
+
+    status OverallOrderStatus
+
+    assignedDesignerId String?
+
+    // Relatons
+    order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    assignedDesigner Designer? @relation(fields: [assignedDesignerId], references: [id], onDelete: SetNull)
+
+    orderItemOptions OrderItemOption[]
+    orderItemAssignments OrderItemAssignment[]
+    orderItemFiles OrderItemFile[]
+    designRevisions DesignRevision[]
+
+    isDeleted Boolean   @default(false)
+    deletedAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([orderId], name: "idx_order_item_order_id")
+    @@index([productId], name: "idx_order_item_product_id")
+    @@index([assignedDesignerId], name: "idx_order_item_assigned_designer_id")
+    @@map("order_items")
+}
+
+model OrderItemOption {
+    id          String  @id @default(uuid())
+    orderItemId String
+    attributeName String
+    attributeValue String
+    extraPrice Decimal
+
+    orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([orderItemId], name: "idx_order_item_option_order_item_id") 
+    @@map("order_item_options")
+}
+
+model OrderItemAssignment {
+    id String @id @default(uuid())
+    orderItemId String
+    designerId String
+
+    assignedBy String
+    assignedAt DateTime @default(now())
+
+    orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+    designer Designer @relation(fields: [designerId], references: [id], onDelete: Cascade)
+
+    @@index([orderItemId], name: "idx_order_item_assignment_order_item_id")
+    @@index([designerId], name: "idx_order_item_assignment_designer_id")
+    @@map("order_item_assignments")
+}
+
+model OrderItemFile {
+    id String @id @default(uuid())
+    orderItemId String
+    fileType String
+    fileUrl String
+    uploadedBy String
+    createdAt DateTime @default(now())
+
+    orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+    @@index([orderItemId], name: "idx_order_item_file_order_item_id")
+    @@map("order_item_files")
+
+}
+
