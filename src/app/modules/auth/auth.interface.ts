@@ -9,3 +9,7 @@ export interface IRegisterCustomerPayload {
     password: string;
 }
 
+export interface IChangePasswordPayload {
+    currentPassword: string;
+    newPassword: string;
+}

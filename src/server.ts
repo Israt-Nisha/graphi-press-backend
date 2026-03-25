@@ -1,14 +1,16 @@
 import app from './app';
-import config from './app/config';
+import { envVars } from './app/config/env';
+import { seedAdmin } from './app/utils/seed';
 
 async function main() {
-  try {
-    app.listen(config.port, () => {
-      console.log(`Example app listening on port <%= config.port %>`);
-    });
-  } catch (err) {
-    console.log(err);
-  }
+ try {
+        await seedAdmin();
+        app.listen(envVars.PORT, () => {
+            console.log(`Server is running on http://localhost:${envVars.PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+    }
 }
 
 main();
