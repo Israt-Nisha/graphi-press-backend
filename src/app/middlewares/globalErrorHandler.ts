@@ -6,14 +6,17 @@ import { TErrorResponse, TErrorSources } from '../interface/error.interface';
 import { handleZodError } from '../errorsHelpers/handleZodError';
 import AppError from '../errorsHelpers/AppError';
 import z from 'zod';
+import { deleteUploadedFilesFromGlobalErrorHandler } from '../utils/deleteUploadedFilesFromGlobalErrorHandler';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
     if (envVars.NODE_ENV === 'development') {
         console.log("Error from Global Error Handler", err);
     }
 
-     let errorSources: TErrorSources[] = []
+    await deleteUploadedFilesFromGlobalErrorHandler(req);
+
+    let errorSources: TErrorSources[] = []
     let statusCode: number = status.INTERNAL_SERVER_ERROR;
     let message: string = 'Internal Server Error';
     let stack: string | undefined = undefined;
